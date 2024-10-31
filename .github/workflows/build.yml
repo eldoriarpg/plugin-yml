@@ -10,7 +10,7 @@ jobs:
       fail-fast: true
     steps:
       - uses: actions/checkout@v4.2.2
-      - uses: gradle/wrapper-validation-action@v1
+      - uses: gradle/wrapper-validation-action@v3
       - name: JDK ${{ matrix.java }}
         uses: actions/setup-java@v4.5.0
         with:
