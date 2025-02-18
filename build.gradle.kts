@@ -16,6 +16,8 @@ dependencies {
         exclude(group = "org.jetbrains.kotlin")
     }
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.2")
+
+    testImplementation(kotlin("test"))
 }
 
 spotless {
@@ -24,6 +26,12 @@ spotless {
     }
     java {
         target("**/*.java")
+    }
+}
+
+tasks{
+    test{
+        useJUnitPlatform()
     }
 }
 
