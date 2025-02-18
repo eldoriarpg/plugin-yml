@@ -7,7 +7,11 @@
 
 package net.minecrell.pluginyml.bukkit
 
-import net.minecrell.pluginyml.*
+import net.minecrell.pluginyml.InvalidPluginDescriptionException
+import net.minecrell.pluginyml.PlatformPlugin
+import net.minecrell.pluginyml.assertApiVersion
+import net.minecrell.pluginyml.assertNamespace
+import net.minecrell.pluginyml.collectLibraries
 import org.gradle.api.Project
 import org.gradle.api.artifacts.result.ResolvedComponentResult
 
@@ -42,6 +46,7 @@ class BukkitPlugin : PlatformPlugin<BukkitPluginDescription>("Bukkit", "plugin.y
     override fun validate(description: BukkitPluginDescription) {
         val name = description.name ?: throw InvalidPluginDescriptionException("Plugin name is not set")
         if (!VALID_NAME.matches(name)) throw InvalidPluginDescriptionException("Invalid plugin name: should match $VALID_NAME")
+
         description.apiVersion?.let { apiVersion ->
             assertApiVersion(apiVersion, VALID_API_VERSION, 13)
         }

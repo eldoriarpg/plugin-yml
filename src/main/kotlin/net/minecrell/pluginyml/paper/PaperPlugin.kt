@@ -9,6 +9,7 @@ package net.minecrell.pluginyml.paper
 
 import net.minecrell.pluginyml.InvalidPluginDescriptionException
 import net.minecrell.pluginyml.PlatformPlugin
+import net.minecrell.pluginyml.assertApiVersion
 import net.minecrell.pluginyml.assertNamespace
 import org.gradle.api.Project
 
@@ -17,6 +18,9 @@ class PaperPlugin : PlatformPlugin<PaperPluginDescription>("Paper", "paper-plugi
     companion object {
         @JvmStatic
         private val VALID_NAME = Regex("^[A-Za-z0-9 _.-]+$")
+
+        @JvmStatic
+        private val VALID_API_VERSION = Regex("^1\\.[1-9][0-9]*(\\.[1-9][0-9]*)?$")
 
         @JvmStatic
         private val INVALID_NAMESPACES =
@@ -41,7 +45,7 @@ class PaperPlugin : PlatformPlugin<PaperPluginDescription>("Paper", "paper-plugi
         if (description.version.isNullOrEmpty()) throw InvalidPluginDescriptionException("Plugin version is not set")
         description.apiVersion ?: throw InvalidPluginDescriptionException("Plugin API version is not set")
         description.apiVersion?.let { apiVersion ->
-            if (apiVersion < "1.19") throw InvalidPluginDescriptionException("Plugin API version must be at least 1.19")
+            assertApiVersion(apiVersion, VALID_API_VERSION, 19)
         }
 
         val main = description.main ?: throw InvalidPluginDescriptionException("Main class is not defined")
