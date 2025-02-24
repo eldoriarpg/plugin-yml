@@ -6,6 +6,6 @@ additional properties can be added using a simple DSL.
 
 ## Usage
 
-Please consult the [wiki](https://github.com/eldoriarpg/plugin-yml/wiki) for up to date usage instructions
+Please consult the [wiki](https://docs.eldoria.de/pluginyml/) for up to date usage instructions
 
 [plugin-yml]: https://github.com/eldoriarpg/plugin-yml
