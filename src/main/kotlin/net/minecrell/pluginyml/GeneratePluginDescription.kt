@@ -34,7 +34,9 @@ abstract class GeneratePluginDescription : DefaultTask() {
         "http://repo.maven.apache.org/maven2"
     )
 
+    @Internal
     val eldonexusUrl: String = "https://eldonexus.de/repository/maven-public/"
+    @Internal
     val googleUrl: String = "https://maven-central.storage-download.googleapis.com/maven2"
 
     /**
@@ -49,7 +51,7 @@ abstract class GeneratePluginDescription : DefaultTask() {
      */
     @get:Input
     @get:Optional
-    abstract val mavenCentralProxies: Property<Map<String, String>>
+    abstract val mavenCentralProxies: MapProperty<String, String>
 
     /**
      * The filename for the generated libraries.json file.
@@ -113,7 +115,7 @@ abstract class GeneratePluginDescription : DefaultTask() {
         var adjustedRepositories = repositories
         if (proxies != null) {
             adjustedRepositories = repositories.filter { (_, url) ->
-                if (centralUrls.contains(url)) {
+                if (centralUrls.any { url.startsWith(it) }) {
                     logger.info("Removing mavenCentral url '$url'")
                     false
                 } else true
@@ -122,7 +124,7 @@ abstract class GeneratePluginDescription : DefaultTask() {
             proxies.forEach { (name, url) -> adjustedRepositories[name] = url }
         }
 
-        if (proxies == null && adjustedRepositories.values.any { centralUrls.contains(it) }) {
+        if (proxies == null && adjustedRepositories.values.any { repo -> centralUrls.any{c -> repo.startsWith(c)}}) {
             logger.warn("No mavenCentralProxy configured; using maven central directly is not encouraged.")
             logger.warn("Use useEldoNexusMavenCentralProxy() or useGoogleMavenCentralProxy() or set mavenCentralProxy in the generatePluginDescription task")
         }
@@ -139,7 +141,7 @@ abstract class GeneratePluginDescription : DefaultTask() {
     }
 
     fun useEldoNexusMavenCentralProxy() {
-        addMavenCentralProxy("eldonexus", eldonexusUrl)
+        addMavenCentralProxy("eldonexus_central_proxy", eldonexusUrl)
         logger.info("Registering EldoNexus Maven Central Proxy: $eldonexusUrl")
         logger.info("Consider donating if you use our proxy: https://ko-fi.com/eldoriaplugins")
     }
@@ -159,7 +161,7 @@ abstract class GeneratePluginDescription : DefaultTask() {
      * Artifacts of unpopular libraries may be missing.
      */
     fun useGoogleMavenCentralProxy() {
-        addMavenCentralProxy("google", googleUrl)
+        addMavenCentralProxy("google_central_proxy", googleUrl)
         logger.info("Registering Google Maven Central Proxy: $googleUrl")
     }
 
