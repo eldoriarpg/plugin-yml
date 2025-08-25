@@ -2,7 +2,7 @@ plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
     id("com.gradle.plugin-publish") version "1.3.1"
-    id("com.diffplug.spotless") version "7.0.2"
+    id("com.diffplug.spotless") version "7.0.3"
 }
 
 val url: String by extra
@@ -16,6 +16,8 @@ dependencies {
         exclude(group = "org.jetbrains.kotlin")
     }
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.2")
+
+    testImplementation(kotlin("test"))
 }
 
 spotless {
@@ -24,6 +26,12 @@ spotless {
     }
     java {
         target("**/*.java")
+    }
+}
+
+tasks{
+    test{
+        useJUnitPlatform()
     }
 }
 

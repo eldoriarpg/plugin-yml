@@ -9,6 +9,8 @@ package net.minecrell.pluginyml.paper
 
 import net.minecrell.pluginyml.InvalidPluginDescriptionException
 import net.minecrell.pluginyml.PlatformPlugin
+import net.minecrell.pluginyml.assertApiVersion
+import net.minecrell.pluginyml.assertNamespace
 import org.gradle.api.Project
 
 class PaperPlugin : PlatformPlugin<PaperPluginDescription>("Paper", "paper-plugin.yml") {
@@ -16,8 +18,13 @@ class PaperPlugin : PlatformPlugin<PaperPluginDescription>("Paper", "paper-plugi
     companion object {
         @JvmStatic
         private val VALID_NAME = Regex("^[A-Za-z0-9 _.-]+$")
+
         @JvmStatic
-        private val INVALID_NAMESPACES = listOf("net.minecraft.", "org.bukkit.", "io.papermc.paper.", "com.destroystokoyo.paper.")
+        private val VALID_API_VERSION = Regex("^1\\.[1-9][0-9]*(\\.[1-9][0-9]*)?$")
+
+        @JvmStatic
+        private val INVALID_NAMESPACES =
+            listOf("net.minecraft.", "org.bukkit.", "io.papermc.paper.", "com.destroystokoyo.paper.")
 
     }
 
@@ -38,14 +45,14 @@ class PaperPlugin : PlatformPlugin<PaperPluginDescription>("Paper", "paper-plugi
         if (description.version.isNullOrEmpty()) throw InvalidPluginDescriptionException("Plugin version is not set")
         description.apiVersion ?: throw InvalidPluginDescriptionException("Plugin API version is not set")
         description.apiVersion?.let { apiVersion ->
-            if (apiVersion < "1.19") throw InvalidPluginDescriptionException("Plugin API version must be at least 1.19")
+            assertApiVersion(apiVersion, VALID_API_VERSION, 19)
         }
 
         val main = description.main ?: throw InvalidPluginDescriptionException("Main class is not defined")
         if (main.isEmpty()) throw InvalidPluginDescriptionException("Main class cannot be empty")
-        validateNamespace(description.main, "Main")
-        validateNamespace(description.bootstrapper, "Bootstrapper")
-        validateNamespace(description.loader, "Loader")
+        assertNamespace(description.main, "Main", INVALID_NAMESPACES)
+        assertNamespace(description.bootstrapper, "Bootstrapper", INVALID_NAMESPACES)
+        assertNamespace(description.loader, "Loader", INVALID_NAMESPACES)
 
         for (serverDependency in description.serverDependencies) {
             if (serverDependency.name.isEmpty()) throw InvalidPluginDescriptionException("Plugin name in serverDependencies can not be empty")
@@ -56,14 +63,6 @@ class PaperPlugin : PlatformPlugin<PaperPluginDescription>("Paper", "paper-plugi
 
         if (description.provides?.all(VALID_NAME::matches) == false) {
             throw InvalidPluginDescriptionException("Invalid plugin provides name: all should match $VALID_NAME")
-        }
-    }
-
-    private fun validateNamespace(namespace: String?, name: String) {
-        for (invalidNamespace in INVALID_NAMESPACES) {
-            if (namespace?.startsWith(invalidNamespace) == true) {
-                throw InvalidPluginDescriptionException("$name may not be within the $invalidNamespace namespace")
-            }
         }
     }
 }
