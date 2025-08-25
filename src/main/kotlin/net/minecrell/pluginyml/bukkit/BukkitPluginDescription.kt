@@ -38,6 +38,8 @@ class BukkitPluginDescription(project: Project) : PluginDescription() {
     @Input @Optional var provides: List<String>? = null
     @Input @Optional var libraries: List<String>? = null
     @Input @Optional @JsonProperty("folia-supported") var foliaSupported: Boolean? = null
+    @Input @Optional @JsonProperty("paper-plugin-loader") var paperPluginLoader: String? = null
+    @Input @Optional @JsonProperty("paper-skip-libraries") var paperSkipLibraries: Boolean? = null
 
     @Nested val commands: NamedDomainObjectContainer<Command> = project.container(Command::class.java)
     @Nested val permissions: NamedDomainObjectContainer<Permission> = project.container(Permission::class.java)

@@ -2,7 +2,7 @@ plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
     id("com.gradle.plugin-publish") version "1.3.1"
-    id("com.diffplug.spotless") version "7.0.2"
+    id("com.diffplug.spotless") version "7.2.1"
 }
 
 val url: String by extra
@@ -26,6 +26,12 @@ spotless {
     }
     java {
         target("**/*.java")
+    }
+}
+
+java{
+    toolchain{
+        languageVersion.set(JavaLanguageVersion.of(17))
     }
 }
 
