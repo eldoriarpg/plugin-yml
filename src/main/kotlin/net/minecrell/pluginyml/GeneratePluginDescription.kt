@@ -125,8 +125,8 @@ abstract class GeneratePluginDescription : DefaultTask() {
         }
 
         if (proxies == null && adjustedRepositories.values.any { repo -> centralUrls.any{c -> repo.startsWith(c)}}) {
-            logger.warn("No mavenCentralProxy configured; using maven central directly is not encouraged.")
-            logger.warn("Use useEldoNexusMavenCentralProxy() or useGoogleMavenCentralProxy() or set mavenCentralProxy in the generatePluginDescription task")
+            logger.error("No mavenCentralProxy configured; using maven central directly is not encouraged.")
+            logger.error("Use useDefaultCentralProxy(), useEldoNexusMavenCentralProxy(), useGoogleMavenCentralProxy() or addMavenCentralProxy(String,String) in the generatePluginDescription task")
         }
         return adjustedRepositories
     }
@@ -146,7 +146,7 @@ abstract class GeneratePluginDescription : DefaultTask() {
         logger.info("Consider donating if you use our proxy: https://ko-fi.com/eldoriaplugins")
     }
 
-    private fun addMavenCentralProxy(name: String, url: String) {
+    fun addMavenCentralProxy(name: String, url: String) {
         var proxies = mutableMapOf<String, String>()
         if (mavenCentralProxies.isPresent) {
             proxies = mavenCentralProxies.get().toMutableMap()
