@@ -32,10 +32,10 @@ abstract class GeneratePluginDescription : DefaultTask() {
         "http://repo1.maven.org/maven2",
         "https://repo.maven.apache.org/maven2",
         "http://repo.maven.apache.org/maven2"
-    );
+    )
 
-    private val eldonexusUrl = "https://eldonexus.de/repository/maven-public/"
-    private val googleUrl = "https://maven-central.storage-download.googleapis.com/maven2"
+    val eldonexusUrl: String = "https://eldonexus.de/repository/maven-public/"
+    val googleUrl: String = "https://maven-central.storage-download.googleapis.com/maven2"
 
     /**
      * The filename for the generated plugin description file.
@@ -45,11 +45,11 @@ abstract class GeneratePluginDescription : DefaultTask() {
 
     /**
      * The URL of the maven central proxy to use.
-     * You can also use [useEldoNexusMavenCentralProxy] and [useGoogleMavenCentralProxy] to set it to preconfigured values.
+     * You can also use [useDefaultCentralProxy] and [useGoogleMavenCentralProxy] to set it to preconfigured values.
      */
     @get:Input
     @get:Optional
-    abstract val mavenCentralProxy: Property<String>
+    abstract val mavenCentralProxies: Property<Map<String, String>>
 
     /**
      * The filename for the generated libraries.json file.
@@ -109,15 +109,20 @@ abstract class GeneratePluginDescription : DefaultTask() {
 
     private fun getRepositories(): Map<String, String> {
         val repositories = repos.get()
-        val proxy = mavenCentralProxy.orNull?.trim()?.takeIf { it.isNotEmpty() }
-        val adjustedRepositories = repositories.mapValues { (_, url) ->
-            if (centralUrls.contains(url) && proxy != null) {
-                logger.info("Replacing mavenCentral url '$url' with proxy '$proxy'")
-                proxy
-            } else url
+        val proxies = mavenCentralProxies.orNull?.takeIf { it.isNotEmpty() }
+        var adjustedRepositories = repositories
+        if (proxies != null) {
+            adjustedRepositories = repositories.filter { (_, url) ->
+                if (centralUrls.contains(url)) {
+                    logger.info("Removing mavenCentral url '$url'")
+                    false
+                } else true
+            }.toMutableMap();
+            logger.info("Using mavenCentral urls: ${proxies.values}")
+            proxies.forEach { (name, url) -> adjustedRepositories[name] = url }
         }
 
-        if (proxy == null && repositories.values.any { centralUrls.contains(it) }) {
+        if (proxies == null && adjustedRepositories.values.any { centralUrls.contains(it) }) {
             logger.warn("No mavenCentralProxy configured; using maven central directly is not encouraged.")
             logger.warn("Use useEldoNexusMavenCentralProxy() or useGoogleMavenCentralProxy() or set mavenCentralProxy in the generatePluginDescription task")
         }
@@ -125,13 +130,27 @@ abstract class GeneratePluginDescription : DefaultTask() {
     }
 
     /**
-     * Use our EldoNexus proxy for Maven Central.
+     * Use the Google cache and our EldoNexus proxy for Maven Central as a backup.
      * Consider donating if you use our proxy: https://ko-fi.com/eldoriaplugins
      */
+    fun useDefaultCentralProxy() {
+        useGoogleMavenCentralProxy()
+        useEldoNexusMavenCentralProxy()
+    }
+
     fun useEldoNexusMavenCentralProxy() {
-        mavenCentralProxy.set(eldonexusUrl)
-        logger.info("Using EldoNexus Maven Central Proxy: $eldonexusUrl")
+        addMavenCentralProxy("eldonexus", eldonexusUrl)
+        logger.info("Registering EldoNexus Maven Central Proxy: $eldonexusUrl")
         logger.info("Consider donating if you use our proxy: https://ko-fi.com/eldoriaplugins")
+    }
+
+    private fun addMavenCentralProxy(name: String, url: String) {
+        var proxies = mutableMapOf<String, String>()
+        if (mavenCentralProxies.isPresent) {
+            proxies = mavenCentralProxies.get().toMutableMap()
+        }
+        proxies[name] = url
+        mavenCentralProxies.set(proxies)
     }
 
     /**
@@ -139,13 +158,9 @@ abstract class GeneratePluginDescription : DefaultTask() {
      * This proxy does only cache the most popular artifacts.
      * Artifacts of unpopular libraries may be missing.
      */
-    fun useGoogleMavenCentralProxy(){
-        mavenCentralProxy.set(googleUrl)
-        logger.info("Using Google Maven Central Proxy: $googleUrl")
-    }
-
-    private fun centralProxyUrl() : String? {
-        return mavenCentralProxy.orNull?: System.getenv("MAVEN_CENTRAL_REPOSITORY_PROXY")
+    fun useGoogleMavenCentralProxy() {
+        addMavenCentralProxy("google", googleUrl)
+        logger.info("Registering Google Maven Central Proxy: $googleUrl")
     }
 
     object NamedDomainObjectCollectionConverter : StdConverter<NamedDomainObjectCollection<Any>, Map<String, Any>>() {
