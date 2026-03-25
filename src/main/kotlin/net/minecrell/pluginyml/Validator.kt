@@ -11,11 +11,15 @@ package net.minecrell.pluginyml
 fun assertApiVersion(apiVersion: String, valid: Regex, minApiVersion: Int) {
     if (!valid.matches(apiVersion)) throw InvalidPluginDescriptionException("Invalid api version: should match ${valid.pattern}")
     val splitVersion = apiVersion.split('.').map { v -> v.toInt() }
+    if (splitVersion[0] != 1 && splitVersion[0] < 26) throw InvalidPluginDescriptionException("Invalid api version: Invalid major version ${splitVersion[0]}")
+
     if (splitVersion.size == 2) {
-        if (splitVersion[1] < minApiVersion) throw InvalidPluginDescriptionException("Invalid api version: should be at least 1.${minApiVersion}")
+        if (splitVersion[0] == 1 && splitVersion[1] < minApiVersion) throw InvalidPluginDescriptionException("Invalid api version: should be at least 1.${minApiVersion}")
     } else if (splitVersion.size == 3) {
-        if (splitVersion[1] < 20) throw InvalidPluginDescriptionException("Invalid api version: Minor versions are not supported before 1.20.5")
-        if (splitVersion[1] == 20 && splitVersion[2] < 5) throw InvalidPluginDescriptionException("Invalid api version: Minor versions are not supported before 1.20.5")
+        if (splitVersion[0] == 1) {
+            if (splitVersion[1] < 20) throw InvalidPluginDescriptionException("Invalid api version: Minor versions are not supported before 1.20.5")
+            if (splitVersion[1] == 20 && splitVersion[2] < 5) throw InvalidPluginDescriptionException("Invalid api version: Minor versions are not supported before 1.20.5")
+        }
     } else {
         throw InvalidPluginDescriptionException("Invalid api version: ${valid.pattern}")
     }
