@@ -76,7 +76,7 @@ class ValidatorKtTest {
 
     @Test
     fun `assert some general versions`() {
-        val validRegex = Regex("^1\\.[1-9][0-9]*(\\.[1-9][0-9]*)?$")
+        val validRegex = Regex("^\\d{1,2}\\.[1-9][0-9]*(\\.[1-9][0-9]*)?$")
         val minApiVersion = 13
 
         assertFailsWith<InvalidPluginDescriptionException> {
@@ -102,6 +102,8 @@ class ValidatorKtTest {
         assertApiVersion("1.20.5", validRegex, minApiVersion) // Should pass
         assertApiVersion("1.20.6", validRegex, minApiVersion) // Should pass
         assertApiVersion("1.21", validRegex, minApiVersion) // Should pass
+        assertApiVersion("26.1", validRegex, minApiVersion) // Should pass
+        assertApiVersion("26.1.1", validRegex, minApiVersion) // Should pass
 
         assertFailsWith<InvalidPluginDescriptionException> {
             assertApiVersion("1.021", validRegex, minApiVersion)
@@ -119,6 +121,10 @@ class ValidatorKtTest {
 
         assertFailsWith<InvalidPluginDescriptionException> {
             assertApiVersion("2.1", validRegex, minApiVersion)
+        }
+
+        assertFailsWith<InvalidPluginDescriptionException> {
+            assertApiVersion("25.1", validRegex, minApiVersion)
         }
     }
 }

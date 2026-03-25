@@ -22,7 +22,7 @@ class BukkitPlugin : PlatformPlugin<BukkitPluginDescription>("Bukkit", "plugin.y
         private val VALID_NAME = Regex("^[A-Za-z0-9 _.-]+$")
 
         @JvmStatic
-        private val VALID_API_VERSION = Regex("^1\\.[1-9][0-9]*(\\.[1-9][0-9]*)?$")
+        private val VALID_API_VERSION = Regex("^\\d{1,2}\\.[1-9][0-9]*(\\.[1-9][0-9]*)?$")
 
         @JvmStatic
         private val INVALID_NAMESPACES =
