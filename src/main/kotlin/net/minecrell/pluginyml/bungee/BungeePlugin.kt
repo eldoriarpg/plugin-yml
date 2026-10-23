@@ -13,7 +13,7 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.result.ResolvedComponentResult
 
 class BungeePlugin : PlatformPlugin<BungeePluginDescription>("Bungee", "bungee.yml") {
-    override fun createExtension(project: Project) = BungeePluginDescription()
+    override fun createExtension(project: Project) = BungeePluginDescription(project)
 
     override fun setDefaults(
         project: Project,

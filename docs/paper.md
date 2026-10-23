@@ -164,6 +164,7 @@ Every property is optional unless the table says otherwise.
 | `hasOpenClassloader` | `Boolean` | none | `has-open-classloader` |
 | `foliaSupported` | `Boolean` | none | `folia-supported` |
 | `generateLibrariesJson` | `Boolean` | `false` | not written, see [Libraries](./libraries.md) |
+| `extra` | `Map<String, Any>` | empty | top-level keys, see [Additional values](#additional-values) |
 | `bootstrapDependencies` | container of dependencies | empty | `dependencies.bootstrap` |
 | `serverDependencies` | container of dependencies | empty | `dependencies.server` |
 | `permissions` | container of permissions | empty | `permissions` |
@@ -226,6 +227,24 @@ dependencies:
 When both lists are empty, no `dependencies` section is written.
 
 To use classes of another plugin in your code, add that plugin's API as a `compileOnly` dependency as usual.
+
+## Additional values
+
+Keys that Plugin YML does not know go into `extra`. Every entry is written as a top-level key of `paper-plugin.yml`, and values can be strings, numbers, booleans, lists and nested maps:
+
+```kotlin
+paper {
+    extra.put("my-tool", mapOf("channels" to listOf("release", "beta")))
+}
+```
+
+```groovy
+paper {
+    extra = ['my-tool': [channels: ['release', 'beta']]]
+}
+```
+
+A key may not be one of the YAML keys in the [Properties](#properties) table, including `dependencies`, whether that property is set or not. [Additional values](./bukkit.md#additional-values) on the Bukkit page has the details.
 
 ## Checks
 

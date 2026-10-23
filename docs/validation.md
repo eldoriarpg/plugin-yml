@@ -124,6 +124,14 @@ Plus the [API version rules](#api-version-rules). On Paper they always apply, be
 | `Command '<name>' cannot contain ':'` | A command name contains `:`. |
 | `Alias '<alias>' of '<name>' cannot contain ':'` | A command alias contains `:`. |
 
+## Additional values
+
+On every platform:
+
+| Message | Cause |
+|---|---|
+| `Extra values may not use keys plugin-yml writes itself: '<key>', ... Set these through their properties instead` | A key in `extra` is one Plugin YML writes for this platform, for example `name` or `softdepend`. This applies whether that property is set or not. See [Additional values](./bukkit.md#additional-values). |
+
 ## Library errors
 
 | Message | Cause |

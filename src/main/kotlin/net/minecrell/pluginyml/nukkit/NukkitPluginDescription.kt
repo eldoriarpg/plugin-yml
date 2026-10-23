@@ -18,7 +18,7 @@ import org.gradle.api.tasks.Optional
 
 class NukkitPluginDescription(
     project: Project,
-) : PluginDescription() {
+) : PluginDescription(project.objects) {
     @Input var name: String? = null
 
     @Input var main: String? = null

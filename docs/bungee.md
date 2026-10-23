@@ -91,10 +91,29 @@ Every property is optional unless the table says otherwise.
 | `softDepends` | `Set<String>` | none | `softDepends` |
 | `libraries` | `List<String>` | none | `libraries` |
 | `generateLibrariesJson` | `Boolean` | `false` | not written, see [Libraries](./libraries.md) |
+| `extra` | `Map<String, Any>` | empty | top-level keys, see [Additional values](#additional-values) |
 
 BungeeCord has no `website`, commands or permissions in its description file, so the block has none either.
 
 The `libraries` list is filled for you from the `library` and `bungeeLibrary` dependencies. Entries you set by hand stay and the resolved ones are added after them. See [Libraries](./libraries.md).
+
+## Additional values
+
+Keys that Plugin YML does not know go into `extra`. Every entry is written as a top-level key of `bungee.yml`, and values can be strings, numbers, booleans, lists and nested maps:
+
+```kotlin
+bungee {
+    extra.put("my-tool", mapOf("channels" to listOf("release", "beta")))
+}
+```
+
+```groovy
+bungee {
+    extra = ['my-tool': [channels: ['release', 'beta']]]
+}
+```
+
+A key may not be one of the YAML keys in the [Properties](#properties) table, whether that property is set or not. [Additional values](./bukkit.md#additional-values) on the Bukkit page has the details.
 
 ## Checks
 
