@@ -4,6 +4,7 @@ plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
     `maven-publish`
+    alias(libs.plugins.publishdata)
     alias(libs.plugins.plugin.publish)
     alias(libs.plugins.spotless)
 }
@@ -43,6 +44,8 @@ java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(25))
     }
+    withSourcesJar()
+    withJavadocJar()
 }
 
 kotlin {
@@ -54,6 +57,10 @@ kotlin {
 
 tasks.withType<JavaCompile>().configureEach {
     options.release = 21
+}
+
+publishData {
+    eldoNexus(dev = false)
 }
 
 tasks {
