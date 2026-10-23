@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
@@ -39,8 +41,19 @@ spotless {
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_21
+        freeCompilerArgs.add("-Xjdk-release=21")
+    }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.release = 21
 }
 
 tasks {
