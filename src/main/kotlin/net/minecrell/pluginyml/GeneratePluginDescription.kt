@@ -24,7 +24,9 @@ import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.*
+import org.gradle.work.DisableCachingByDefault
 
+@DisableCachingByDefault(because = "Writes small text files from the build model; caching would not pay off")
 abstract class GeneratePluginDescription : DefaultTask() {
 
     private val centralUrls: List<String> = listOf(
