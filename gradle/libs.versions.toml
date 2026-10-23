@@ -1,0 +1,15 @@
+[versions]
+jackson = "2.22.4"
+spotless = "8.10.4"
+ktlint = "1.8.0"
+publishdata = "2.1.0"
+plugin-publish = "2.2.1"
+
+[libraries]
+jackson-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
+jackson-yaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml", version.ref = "jackson" }
+
+[plugins]
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+publishdata = { id = "de.chojo.publishdata", version.ref = "publishdata" }
+plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }

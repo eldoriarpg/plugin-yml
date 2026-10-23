@@ -1,21 +1,21 @@
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
-    id("com.gradle.plugin-publish") version "1.3.1"
-    id("com.diffplug.spotless") version "7.2.1"
+    alias(libs.plugins.plugin.publish)
+    alias(libs.plugins.spotless)
 }
 
-val url: String by extra
+description = "A Gradle plugin that generates plugin.yml for Bukkit/Paper/BungeeCord/Nukkit plugins based on the Gradle project"
 
 repositories {
     gradlePluginPortal()
 }
 
 dependencies {
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.2") {
+    implementation(libs.jackson.kotlin) {
         exclude(group = "org.jetbrains.kotlin")
     }
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.2")
+    implementation(libs.jackson.yaml)
 
     testImplementation(kotlin("test"))
 }
@@ -42,8 +42,8 @@ tasks{
 }
 
 gradlePlugin {
-    website = url
-    vcsUrl = url
+    website = "https://docs.eldoria.de/plugin-yml"
+    vcsUrl = "https://github.com/eldoriarpg/plugin-yml"
 
     plugins {
         register("bukkit") {
