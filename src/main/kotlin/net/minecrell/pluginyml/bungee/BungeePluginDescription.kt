@@ -7,10 +7,13 @@
 package net.minecrell.pluginyml.bungee
 
 import net.minecrell.pluginyml.PluginDescription
+import org.gradle.api.Project
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 
-class BungeePluginDescription : PluginDescription() {
+class BungeePluginDescription(
+    project: Project,
+) : PluginDescription(project.objects) {
     @Input var name: String? = null
 
     @Input var main: String? = null

@@ -24,7 +24,7 @@ import org.gradle.api.tasks.Optional
 @JsonNaming(KebabCaseStrategy::class)
 class PaperPluginDescription(
     project: Project,
-) : PluginDescription() {
+) : PluginDescription(project.objects) {
     @Input var apiVersion: String? = null
 
     @Input var name: String? = null

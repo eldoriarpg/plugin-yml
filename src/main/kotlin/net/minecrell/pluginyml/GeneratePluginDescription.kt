@@ -104,6 +104,7 @@ abstract class GeneratePluginDescription : DefaultTask() {
                 .registerModule(module)
                 .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
         val pluginDescription = pluginDescription.get()
+        assertNoExtraClash(mapper, pluginDescription)
         mapper.writeValue(outputDirectory.file(fileName).get().asFile, pluginDescription)
 
         if (pluginDescription.generateLibrariesJson) {
@@ -116,6 +117,34 @@ abstract class GeneratePluginDescription : DefaultTask() {
                     .registerModule(module)
                     .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
             jsonMapper.writeValue(outputDirectory.file(librariesJsonFileName).get().asFile, pluginLibraries)
+        }
+    }
+
+    /**
+     * Fails when an [PluginDescription.extra] key is one of the keys plugin-yml writes for this platform,
+     * whether that value is set or not.
+     */
+    private fun assertNoExtraClash(
+        mapper: ObjectMapper,
+        description: PluginDescription,
+    ) {
+        val modelled =
+            mapper.serializationConfig
+                .introspect(mapper.constructType(description.javaClass))
+                .findProperties()
+                .map { it.name }
+                .toSet()
+        val clashes =
+            description.extra
+                .get()
+                .keys
+                .filter { it in modelled }
+        if (clashes.isNotEmpty()) {
+            throw InvalidPluginDescriptionException(
+                "Extra values may not use keys plugin-yml writes itself: ${clashes.joinToString {
+                    "'$it'"
+                }}. Set these through their properties instead",
+            )
         }
     }
 

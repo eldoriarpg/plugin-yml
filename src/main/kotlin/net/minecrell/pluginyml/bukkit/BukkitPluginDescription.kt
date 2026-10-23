@@ -19,7 +19,7 @@ import org.gradle.api.tasks.Optional
 
 class BukkitPluginDescription(
     project: Project,
-) : PluginDescription() {
+) : PluginDescription(project.objects) {
     @Input @Optional
     @JsonProperty("api-version")
     var apiVersion: String? = null

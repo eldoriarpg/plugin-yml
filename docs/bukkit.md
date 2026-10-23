@@ -156,6 +156,7 @@ Every property is optional unless the table says otherwise.
 | `paperPluginLoader` | `String` | none | `paper-plugin-loader` |
 | `paperSkipLibraries` | `Boolean` | none | `paper-skip-libraries` |
 | `generateLibrariesJson` | `Boolean` | `false` | not written, see [Libraries](./libraries.md) |
+| `extra` | `Map<String, Any>` | empty | top-level keys, see [Additional values](#additional-values) |
 | `commands` | container of commands | empty | `commands` |
 | `permissions` | container of permissions | empty | `permissions` |
 
@@ -271,6 +272,62 @@ loadbefore:
 default-permission: op
 folia-supported: true
 ```
+
+## Additional values
+
+Some plugins and tools read keys from `plugin.yml` that Plugin YML does not know. Put them into `extra`. Every entry is written as a top-level key of the file, after the values Plugin YML writes itself. Values can be strings, numbers, booleans, lists and nested maps. `extra` is available since Plugin YML 0.10.0.
+
+[PluginUpdater](https://github.com/OakLoaf/PluginUpdater/wiki/PluginUpdater-Plugin#adding-support-for-pluginupdater), for example, finds your plugin through keys such as `modrinth-project-id`.
+
+Kotlin DSL:
+
+```kotlin
+bukkit {
+    main = "com.example.testplugin.TestPlugin"
+
+    extra.put("modrinth-project-id", "djC8I9ui")
+    extra.put("github-repo", "OakLoaf/LushRewards")
+}
+```
+
+Groovy DSL:
+
+```groovy
+bukkit {
+    main = 'com.example.testplugin.TestPlugin'
+
+    extra = [
+        'modrinth-project-id': 'djC8I9ui',
+        'github-repo': 'OakLoaf/LushRewards'
+    ]
+}
+```
+
+Both write:
+
+```yaml
+name: TestPlugin
+version: 1.0.0
+main: com.example.testplugin.TestPlugin
+modrinth-project-id: djC8I9ui
+github-repo: OakLoaf/LushRewards
+```
+
+`extra.put(key, value)` adds one entry. `extra = ...` replaces all entries, in Kotlin with `extra = mapOf(...)`. Nested maps and lists become nested YAML:
+
+```kotlin
+extra.put("my-tool", mapOf("channels" to listOf("release", "beta"), "notify" to true))
+```
+
+```yaml
+my-tool:
+  channels:
+    - release
+    - beta
+  notify: true
+```
+
+A key in `extra` may not be one of the YAML keys in the [Properties](#properties) table, such as `name`, `softdepend` or `commands`. This holds whether you set that property or not, so `extra` never overrides or adds to a value Plugin YML manages. Use the property instead. A clashing key stops the build, see [Validation](./validation.md#additional-values).
 
 ## Checks
 

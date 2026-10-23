@@ -131,6 +131,7 @@ Every property is optional unless the table says otherwise.
 | `loadBefore` | `List<String>` | none | `loadbefore` |
 | `prefix` | `String` | none | `prefix` |
 | `generateLibrariesJson` | `Boolean` | `false` | not written, see [Libraries](./libraries.md) |
+| `extra` | `Map<String, Any>` | empty | top-level keys, see [Additional values](#additional-values) |
 | `commands` | container of commands | empty | `commands` |
 | `permissions` | container of permissions | empty | `permissions` |
 
@@ -167,6 +168,24 @@ Nukkit permissions can nest. Each permission has:
 ## Libraries
 
 Nukkit has no `libraries` entry in its description file. You can still declare `nukkitLibrary` dependencies and have them written to `nukkit-libraries.json`. Your plugin then has to load them itself. See [Libraries](./libraries.md).
+
+## Additional values
+
+Keys that Plugin YML does not know go into `extra`. Every entry is written as a top-level key of `nukkit.yml`, and values can be strings, numbers, booleans, lists and nested maps:
+
+```kotlin
+nukkit {
+    extra.put("my-tool", mapOf("channels" to listOf("release", "beta")))
+}
+```
+
+```groovy
+nukkit {
+    extra = ['my-tool': [channels: ['release', 'beta']]]
+}
+```
+
+A key may not be one of the YAML keys in the [Properties](#properties) table, whether that property is set or not. [Additional values](./bukkit.md#additional-values) on the Bukkit page has the details.
 
 ## Checks
 
