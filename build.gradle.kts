@@ -21,11 +21,18 @@ dependencies {
 }
 
 spotless {
-    kotlin{
+    kotlin {
+        target("src/**/*.kt")
+        ktlint(libs.versions.ktlint.get())
         licenseHeaderFile(rootProject.file("HEADER.txt"))
+        trimTrailingWhitespace()
+        endWithNewline()
     }
-    java {
-        target("**/*.java")
+    kotlinGradle {
+        target("*.gradle.kts")
+        ktlint(libs.versions.ktlint.get())
+        trimTrailingWhitespace()
+        endWithNewline()
     }
 }
 
