@@ -1,6 +1,5 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "github>eldoriarpg/.github"
-  ]
+  "extends": ["github>eldoriarpg/.github"],
+  "baseBranchPatterns": ["main"]
 }

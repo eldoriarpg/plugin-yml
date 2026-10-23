@@ -2,9 +2,8 @@
  *     SPDX-License-Identifier: MIT
  *
  *     Copyright (c) 2017 Minecrell <https://github.com/Minecrell>
- *     Copyright (c) 2024 EldoriaRPG and Contributor <https://github.com/eldoriarpg>
+ *     Copyright (C) EldoriaRPG Team and Contributor
  */
-
 package net.minecrell.pluginyml.bukkit
 
 import net.minecrell.pluginyml.InvalidPluginDescriptionException
@@ -16,7 +15,6 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.result.ResolvedComponentResult
 
 class BukkitPlugin : PlatformPlugin<BukkitPluginDescription>("Bukkit", "plugin.yml") {
-
     companion object {
         @JvmStatic
         private val VALID_NAME = Regex("^[A-Za-z0-9 _.-]+$")
@@ -31,7 +29,10 @@ class BukkitPlugin : PlatformPlugin<BukkitPluginDescription>("Bukkit", "plugin.y
 
     override fun createExtension(project: Project) = BukkitPluginDescription(project)
 
-    override fun setDefaults(project: Project, description: BukkitPluginDescription) {
+    override fun setDefaults(
+        project: Project,
+        description: BukkitPluginDescription,
+    ) {
         description.name = description.name ?: project.name
         description.version = description.version ?: project.version.toString()
         description.description = description.description ?: project.description
@@ -39,7 +40,10 @@ class BukkitPlugin : PlatformPlugin<BukkitPluginDescription>("Bukkit", "plugin.y
         description.author = description.author ?: project.findProperty("author")?.toString()
     }
 
-    override fun setLibraries(libraries: ResolvedComponentResult?, description: BukkitPluginDescription) {
+    override fun setLibraries(
+        libraries: ResolvedComponentResult?,
+        description: BukkitPluginDescription,
+    ) {
         description.libraries = libraries.collectLibraries(description.libraries)
     }
 
@@ -69,7 +73,10 @@ class BukkitPlugin : PlatformPlugin<BukkitPluginDescription>("Bukkit", "plugin.y
         }
     }
 
-    private fun validateNamespace(namespace: String, name: String) {
+    private fun validateNamespace(
+        namespace: String,
+        name: String,
+    ) {
         for (invalidNamespace in INVALID_NAMESPACES) {
             if (namespace.startsWith(invalidNamespace)) {
                 throw InvalidPluginDescriptionException("$name may not be within the $invalidNamespace namespace")

@@ -2,9 +2,8 @@
  *     SPDX-License-Identifier: MIT
  *
  *     Copyright (c) 2017 Minecrell <https://github.com/Minecrell>
- *     Copyright (c) 2024 EldoriaRPG and Contributor <https://github.com/eldoriarpg>
+ *     Copyright (C) EldoriaRPG Team and Contributor
  */
-
 package net.minecrell.pluginyml.nukkit
 
 import net.minecrell.pluginyml.InvalidPluginDescriptionException
@@ -14,7 +13,10 @@ import org.gradle.api.Project
 class NukkitPlugin : PlatformPlugin<NukkitPluginDescription>("Nukkit", "nukkit.yml") {
     override fun createExtension(project: Project) = NukkitPluginDescription(project)
 
-    override fun setDefaults(project: Project, description: NukkitPluginDescription) {
+    override fun setDefaults(
+        project: Project,
+        description: NukkitPluginDescription,
+    ) {
         description.name = description.name ?: project.name
         description.version = description.version ?: project.version.toString()
         description.description = description.description ?: project.description
@@ -39,5 +41,4 @@ class NukkitPlugin : PlatformPlugin<NukkitPluginDescription>("Nukkit", "nukkit.y
             }
         }
     }
-
 }

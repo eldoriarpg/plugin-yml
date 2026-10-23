@@ -29,6 +29,19 @@ There is one Gradle plugin per platform. The current version of all four is `0.9
 
 The plugins are published on the Gradle Plugin Portal, for example [de.eldoria.plugin-yml.bukkit](https://plugins.gradle.org/plugin/de.eldoria.plugin-yml.bukkit). Gradle finds them there without any extra repository.
 
+Snapshot builds of the next version are published to [EldoNexus](https://eldonexus.de). To use a snapshot, add EldoNexus to the plugin repositories in `settings.gradle.kts` and use a version that ends in `-SNAPSHOT`:
+
+```kotlin
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven("https://eldonexus.de/repository/maven-public/")
+    }
+}
+```
+
+Snapshots are compiled for Java 21, so Gradle has to run on Java 21 or newer to use them.
+
 ## Add the plugin
 
 Apply the plugin for your platform next to the `java` plugin. The Kotlin JVM plugin applies `java` for you, so it works as well.
