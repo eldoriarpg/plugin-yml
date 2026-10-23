@@ -1,6 +1,7 @@
 plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
+    `maven-publish`
     alias(libs.plugins.plugin.publish)
     alias(libs.plugins.spotless)
 }
@@ -80,6 +81,37 @@ gradlePlugin {
             description = "Generate paper-plugin.yml for Paper plugins based on the Gradle project"
             implementationClass = "net.minecrell.pluginyml.paper.PaperPlugin"
             tags = listOf("paper")
+        }
+    }
+}
+
+publishing {
+    publications.withType<MavenPublication>().configureEach {
+        pom {
+            url = "https://github.com/eldoriarpg/plugin-yml"
+            licenses {
+                license {
+                    name = "MIT"
+                    url = "https://opensource.org/license/mit"
+                }
+            }
+            developers {
+                developer {
+                    id = "eldoriarpg"
+                    name = "Eldoria"
+                    url = "https://github.com/eldoriarpg"
+                }
+                developer {
+                    id = "Minecrell"
+                    name = "Minecrell"
+                    url = "https://github.com/Minecrell"
+                }
+            }
+            scm {
+                url = "https://github.com/eldoriarpg/plugin-yml"
+                connection = "scm:git:git://github.com/eldoriarpg/plugin-yml.git"
+                developerConnection = "scm:git:ssh://github.com/eldoriarpg/plugin-yml.git"
+            }
         }
     }
 }
