@@ -2,9 +2,8 @@
  *     SPDX-License-Identifier: MIT
  *
  *     Copyright (c) 2017 Minecrell <https://github.com/Minecrell>
- *     Copyright (c) 2024 EldoriaRPG and Contributor <https://github.com/eldoriarpg>
+ *     Copyright (C) EldoriaRPG Team and Contributor
  */
-
 package net.minecrell.pluginyml.paper
 
 import net.minecrell.pluginyml.InvalidPluginDescriptionException
@@ -14,7 +13,6 @@ import net.minecrell.pluginyml.assertNamespace
 import org.gradle.api.Project
 
 class PaperPlugin : PlatformPlugin<PaperPluginDescription>("Paper", "paper-plugin.yml") {
-
     companion object {
         @JvmStatic
         private val VALID_NAME = Regex("^[A-Za-z0-9 _.-]+$")
@@ -25,12 +23,14 @@ class PaperPlugin : PlatformPlugin<PaperPluginDescription>("Paper", "paper-plugi
         @JvmStatic
         private val INVALID_NAMESPACES =
             listOf("net.minecraft.", "org.bukkit.", "io.papermc.paper.", "com.destroystokoyo.paper.")
-
     }
 
     override fun createExtension(project: Project) = PaperPluginDescription(project)
 
-    override fun setDefaults(project: Project, description: PaperPluginDescription) {
+    override fun setDefaults(
+        project: Project,
+        description: PaperPluginDescription,
+    ) {
         description.name = description.name ?: project.name
         description.version = description.version ?: project.version.toString()
         description.description = description.description ?: project.description
@@ -55,10 +55,18 @@ class PaperPlugin : PlatformPlugin<PaperPluginDescription>("Paper", "paper-plugi
         assertNamespace(description.loader, "Loader", INVALID_NAMESPACES)
 
         for (serverDependency in description.serverDependencies) {
-            if (serverDependency.name.isEmpty()) throw InvalidPluginDescriptionException("Plugin name in serverDependencies can not be empty")
+            if (serverDependency.name.isEmpty()) {
+                throw InvalidPluginDescriptionException(
+                    "Plugin name in serverDependencies can not be empty",
+                )
+            }
         }
         for (bootstrapDependency in description.bootstrapDependencies) {
-            if (bootstrapDependency.name.isEmpty()) throw InvalidPluginDescriptionException("Plugin name in bootstrapDependencies can not be empty")
+            if (bootstrapDependency.name.isEmpty()) {
+                throw InvalidPluginDescriptionException(
+                    "Plugin name in bootstrapDependencies can not be empty",
+                )
+            }
         }
 
         if (description.provides?.all(VALID_NAME::matches) == false) {

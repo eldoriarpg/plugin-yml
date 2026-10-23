@@ -2,16 +2,14 @@
  *     SPDX-License-Identifier: MIT
  *
  *     Copyright (c) 2017 Minecrell <https://github.com/Minecrell>
- *     Copyright (c) 2024 EldoriaRPG and Contributor <https://github.com/eldoriarpg>
+ *     Copyright (C) EldoriaRPG Team and Contributor
  */
-
 package net.minecrell.pluginyml
 
 import kotlin.test.Test
 import kotlin.test.assertFailsWith
 
 class ValidatorKtTest {
-
     @Test
     fun `assertApiVersion should pass for valid api version matching regex`() {
         val apiVersion = "1.21"

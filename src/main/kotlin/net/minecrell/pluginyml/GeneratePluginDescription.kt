@@ -2,9 +2,8 @@
  *     SPDX-License-Identifier: MIT
  *
  *     Copyright (c) 2017 Minecrell <https://github.com/Minecrell>
- *     Copyright (c) 2024 EldoriaRPG and Contributor <https://github.com/eldoriarpg>
+ *     Copyright (C) EldoriaRPG Team and Contributor
  */
-
 package net.minecrell.pluginyml
 
 import com.fasterxml.jackson.annotation.JsonInclude
@@ -33,16 +32,17 @@ import org.gradle.work.DisableCachingByDefault
 
 @DisableCachingByDefault(because = "Writes small text files from the build model; caching would not pay off")
 abstract class GeneratePluginDescription : DefaultTask() {
-
-    private val centralUrls: List<String> = listOf(
-        "https://repo1.maven.org/maven2",
-        "http://repo1.maven.org/maven2",
-        "https://repo.maven.apache.org/maven2",
-        "http://repo.maven.apache.org/maven2"
-    )
+    private val centralUrls: List<String> =
+        listOf(
+            "https://repo1.maven.org/maven2",
+            "http://repo1.maven.org/maven2",
+            "https://repo.maven.apache.org/maven2",
+            "http://repo.maven.apache.org/maven2",
+        )
 
     @Internal
     val eldonexusUrl: String = "https://eldonexus.de/repository/maven-public/"
+
     @Internal
     val googleUrl: String = "https://maven-central.storage-download.googleapis.com/maven2"
 
@@ -81,26 +81,28 @@ abstract class GeneratePluginDescription : DefaultTask() {
 
     @TaskAction
     fun generate() {
-        val factory = YAMLFactory()
-            .disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
-            .enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
-            .enable(YAMLGenerator.Feature.ALWAYS_QUOTE_NUMBERS_AS_STRINGS)
-            .enable(YAMLGenerator.Feature.INDENT_ARRAYS_WITH_INDICATOR)
+        val factory =
+            YAMLFactory()
+                .disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER)
+                .enable(YAMLGenerator.Feature.MINIMIZE_QUOTES)
+                .enable(YAMLGenerator.Feature.ALWAYS_QUOTE_NUMBERS_AS_STRINGS)
+                .enable(YAMLGenerator.Feature.INDENT_ARRAYS_WITH_INDICATOR)
 
         val module = SimpleModule()
         @Suppress("UNCHECKED_CAST") // Too stupid to figure out the generics here...
         module.addSerializer(
             StdDelegatingSerializer(
                 NamedDomainObjectCollection::class.java,
-                NamedDomainObjectCollectionConverter as Converter<NamedDomainObjectCollection<*>, *>
-            )
+                NamedDomainObjectCollectionConverter as Converter<NamedDomainObjectCollection<*>, *>,
+            ),
         )
         module.addSerializer(StdDelegatingSerializer(UrlArtifactRepository::class.java, UrlArtifactRepositoryConverter))
 
-        val mapper = ObjectMapper(factory)
-            .registerKotlinModule()
-            .registerModule(module)
-            .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
+        val mapper =
+            ObjectMapper(factory)
+                .registerKotlinModule()
+                .registerModule(module)
+                .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
         val pluginDescription = pluginDescription.get()
         mapper.writeValue(outputDirectory.file(fileName).get().asFile, pluginDescription)
 
@@ -108,10 +110,11 @@ abstract class GeneratePluginDescription : DefaultTask() {
             val dependencies = librariesRootComponent.orNull.collectLibraries()
             val pluginLibraries = PluginLibraries(getRepositories(), dependencies)
 
-            val jsonMapper = ObjectMapper()
-                .registerKotlinModule()
-                .registerModule(module)
-                .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
+            val jsonMapper =
+                ObjectMapper()
+                    .registerKotlinModule()
+                    .registerModule(module)
+                    .setSerializationInclusion(JsonInclude.Include.NON_EMPTY)
             jsonMapper.writeValue(outputDirectory.file(librariesJsonFileName).get().asFile, pluginLibraries)
         }
     }
@@ -121,19 +124,25 @@ abstract class GeneratePluginDescription : DefaultTask() {
         val proxies = mavenCentralProxies.orNull?.takeIf { it.isNotEmpty() }
         var adjustedRepositories = repositories
         if (proxies != null) {
-            adjustedRepositories = repositories.filter { (_, url) ->
-                if (centralUrls.any { url.startsWith(it) }) {
-                    logger.info("Removing mavenCentral url '$url'")
-                    false
-                } else true
-            }.toMutableMap();
+            adjustedRepositories =
+                repositories
+                    .filter { (_, url) ->
+                        if (centralUrls.any { url.startsWith(it) }) {
+                            logger.info("Removing mavenCentral url '$url'")
+                            false
+                        } else {
+                            true
+                        }
+                    }.toMutableMap()
             logger.info("Using mavenCentral urls: ${proxies.values}")
             proxies.forEach { (name, url) -> adjustedRepositories[name] = url }
         }
 
-        if (proxies == null && adjustedRepositories.values.any { repo -> centralUrls.any{c -> repo.startsWith(c)}}) {
+        if (proxies == null && adjustedRepositories.values.any { repo -> centralUrls.any { c -> repo.startsWith(c) } }) {
             logger.error("No mavenCentralProxy configured; using maven central directly is not encouraged.")
-            logger.error("Use useDefaultCentralProxy(), useEldoNexusMavenCentralProxy(), useGoogleMavenCentralProxy() or addMavenCentralProxy(String,String) in the generatePluginDescription task")
+            logger.error(
+                "Use useDefaultCentralProxy(), useEldoNexusMavenCentralProxy(), useGoogleMavenCentralProxy() or addMavenCentralProxy(String,String) in the generatePluginDescription task",
+            )
         }
         return adjustedRepositories
     }
@@ -153,7 +162,10 @@ abstract class GeneratePluginDescription : DefaultTask() {
         logger.info("Consider donating if you use our proxy: https://ko-fi.com/eldoriaplugins")
     }
 
-    fun addMavenCentralProxy(name: String, url: String) {
+    fun addMavenCentralProxy(
+        name: String,
+        url: String,
+    ) {
         var proxies = mutableMapOf<String, String>()
         if (mavenCentralProxies.isPresent) {
             proxies = mavenCentralProxies.get().toMutableMap()
@@ -185,7 +197,6 @@ abstract class GeneratePluginDescription : DefaultTask() {
 
     data class PluginLibraries(
         val repositories: Map<String, String>,
-        val dependencies: List<String>
+        val dependencies: List<String>,
     )
-
 }
