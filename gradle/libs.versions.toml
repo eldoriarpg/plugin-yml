@@ -2,7 +2,7 @@
 jackson = "2.22.4"
 spotless = "8.10.4"
 ktlint = "1.8.0"
-publishdata = "2.1.0"
+publishdata = "2.3.0"
 plugin-publish = "2.2.1"
 
 [libraries]
