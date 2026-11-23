@@ -1,6 +1,6 @@
 [versions]
 jackson = "2.23.0"
-spotless = "8.11.0"
+spotless = "8.12.0"
 ktlint = "1.8.0"
 publishdata = "2.3.0"
 plugin-publish = "2.2.1"
